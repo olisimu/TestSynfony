@@ -24,13 +24,19 @@ class Workbook
     private $nom;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Sheet", mappedBy="workbook")
+     * @ORM\OneToMany(targetEntity="App\Entity\Sheet", mappedBy="workbook",cascade={"persist"})
      */
     private $sheets;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="relation",cascade={"persist"})
+     */
+    private $wks;
 
     public function __construct()
     {
         $this->sheets = new ArrayCollection();
+        $this->wks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,6 +82,34 @@ class Workbook
             if ($sheet->getWorkbook() === $this) {
                 $sheet->setWorkbook(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getWks(): Collection
+    {
+        return $this->wks;
+    }
+
+    public function addWk(Category $wk): self
+    {
+        if (!$this->wks->contains($wk)) {
+            $this->wks[] = $wk;
+            $wk->addRelation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWk(Category $wk): self
+    {
+        if ($this->wks->contains($wk)) {
+            $this->wks->removeElement($wk);
+            $wk->removeRelation($this);
         }
 
         return $this;

@@ -22,7 +22,7 @@ class Sheet
     private $Nom;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Workbook", inversedBy="sheets")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Workbook", inversedBy="sheets",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $workbook;
